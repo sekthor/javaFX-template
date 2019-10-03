@@ -1,5 +1,8 @@
 package ch.sekthor.project.service;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ServiceLocator {
@@ -9,12 +12,20 @@ public class ServiceLocator {
      */
     private static ServiceLocator serviceLocator;
     private Properties properties;
+    private  DatabaseConnector databaseConnector;
 
 
     // private constructor
     private ServiceLocator(){
-        properties = new Properties();
-
+        // initialize properties
+        this.properties = new Properties();
+        try (InputStream input = new FileInputStream("src/ch/sekthor/project/properties/config.properties")) {
+            properties.load(input);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        // initialize databaseConnector
+        this.databaseConnector = new DatabaseConnector(properties);
     }
 
     /**
@@ -30,5 +41,9 @@ public class ServiceLocator {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public DatabaseConnector getDatabaseConnector() {
+        return databaseConnector;
     }
 }
